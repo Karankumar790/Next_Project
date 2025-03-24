@@ -1,36 +1,3 @@
-// import { NextResponse } from "next/server";
-// import {connectDB} from "@/utils/db";
-// import Profile from "@/models/profile";
-
-// export async function GET(req: Request) {
-//   await connectDB();
-//   const userId = req.headers.get("userId");
-//   const profile = await Profile.findOne({ userId });
-
-//   return NextResponse.json(profile || {}, { status: 200 });
-// }
-
-// export async function POST(req: Request) {
-//   await connectDB();
-//   const { userId, bio, skills, location, social } = await req.json();
-
-//   let profile = await Profile.findOne({ userId });
-//   if (profile) {
-//     profile.bio = bio;
-//     profile.skills = skills;
-//     profile.location = location;
-//     profile.social = social;
-//   } else {
-//     profile = new Profile({ userId, bio, skills, location, social });
-//   }
-//   await profile.save();
-
-//   return NextResponse.json({ message: "Profile updated!" }, { status: 200 });
-// }
-
-
-// src/app/api/profile/route.ts
-
 import { NextResponse } from "next/server";
 import { connectDB } from "@/utils/db";
 import Profile from "@/models/profile";

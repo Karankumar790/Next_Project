@@ -1,10 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
 
-export default function Posts() {
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/Authcontext";
+
+export default function PostsPage() {
   const auth = useAuth();
   const user = auth?.user;
+
   interface Post {
     _id: string;
     content: string;
@@ -12,69 +14,109 @@ export default function Posts() {
     comments: { text: string }[];
   }
 
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]); 
   const [content, setContent] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchPosts() {
-      const res = await fetch("/api/posts");
-      const data = await res.json();
-      setPosts(data);
+      try {
+        const res = await fetch("/api/post");
+        if (!res.ok) throw new Error("Failed to fetch posts");
+
+        const data = await res.json();
+        console.log("Fetched posts:", data);
+
+        if (Array.isArray(data)) {
+          setPosts(data);
+        } else if (Array.isArray(data.posts)) {
+          setPosts(data.posts);
+        } else {
+          console.error("Unexpected API response:", data);
+          setPosts([]); 
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        setPosts([]);
+        alert("Failed to load posts. Please try again.");
+      }
     }
     fetchPosts();
   }, []);
 
   const handlePost = async () => {
-    await fetch("/api/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user?.id, content }),
-    });
-    setContent("");
-    alert("Post Created!");
-  };
+    if (!token) {
+      alert("❌ You are not authorized. Please log in.");
+      return;
+    }
 
-  const handleLike = async (postId: string) => {
-    await fetch(`/api/posts/${postId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "like", userId: user?.id }),
-    });
-    alert("Liked/Unliked!");
-  };
+    try {
+      const res = await fetch("/api/post", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: user?.id, content }),
+      });
 
-  const handleComment = async (postId: string, comment: string) => {
-    await fetch(`/api/posts/${postId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "comment", userId: user?.id, text: comment }),
-    });
-    alert("Comment Added!");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to create post");
+
+      setContent("");
+      alert("✅ Post Created Successfully!");
+
+      setPosts((prevPosts) => [data.post, ...prevPosts]); 
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert(`❌ Error: ${error instanceof Error ? error.message : "An unknown error occurred."}`);
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
-      <textarea value={content} onChange={(e) => setContent(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Write something..." />
-      <button onClick={handlePost} className="w-full bg-blue-500 text-white p-2 rounded-md">Post</button>
+    <div className="max-w-2xl mx-auto p-6 bg-gray-50 min-h-screen">
+      {/* Post Creation Form */}
+      <div className="bg-white shadow-md rounded-md p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">Create a Post</h2>
+        <textarea 
+          value={content} 
+          onChange={(e) => setContent(e.target.value)} 
+          className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          placeholder="Write something..."
+        />
+        <button 
+          onClick={handlePost} 
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold p-2 rounded-md mt-3 transition duration-200 ease-in-out"
+          disabled={!token} 
+        >
+          Post
+        </button>
+      </div>
 
-      {posts.map((post) => (
-        <div key={post._id} className="mt-4 p-4 bg-gray-100 rounded-md">
-          <p>{post.content}</p>
-          <button onClick={() => handleLike(post._id)} className="bg-green-500 text-white px-4 py-1 rounded-md mt-2">
-            Like ({post.likes.length})
-          </button>
-
-          <div className="mt-2">
-            <input type="text" placeholder="Add a comment" onKeyDown={(e) => e.key === "Enter" && handleComment(post._id, e.currentTarget.value)} className="w-full p-1 border rounded-md" />
-          </div>
-
-          <div className="mt-2">
-            {post.comments.map((comment, index) => (
-              <p key={index} className="text-gray-600 text-sm">{comment.text}</p>
+      {/* Posts List */}
+      <div className="bg-white shadow-md rounded-md p-6">
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">All Posts</h2>
+        
+        {posts.length === 0 ? (
+          <p className="text-gray-600 text-center">No posts available.</p>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => (
+              <div key={post._id} className="p-4 bg-gray-100 rounded-md shadow-sm">
+                <p className="text-gray-800">{post.content}</p>
+              </div>
             ))}
           </div>
-        </div>
-      ))}
+        )}
+      </div>
     </div>
   );
 }
+

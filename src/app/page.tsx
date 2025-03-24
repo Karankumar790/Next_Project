@@ -8,8 +8,8 @@ export default function Home() {
       </p>
 
       <div className="mt-6">
-        <a href="/signup" className="bg-blue-500 text-white px-6 py-2 rounded-md mr-4 hover:bg-blue-700">Get Started</a>
-        <a href="/login" className="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-800">Login</a>
+        {/* <a href="/signup" className="bg-blue-500 text-white px-6 py-2 rounded-md mr-4 hover:bg-blue-700">Get Started</a> */}
+        {/* <a href="/login" className="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-800">Login</a> */}
       </div>
     </div>
   );

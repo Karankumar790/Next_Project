@@ -16,7 +16,8 @@ export default function Navbar() {
           {user ? (
             <>
               <a href="/profile" className="mr-4 hover:underline">Profile</a>
-              <a href="/posts" className="mr-4 hover:underline">Posts</a>
+              <a href="/post" className="mr-4 hover:underline">Posts</a>
+              <a href="/mypost" className="mr-4 hover:underline">My Posts</a>
               <button onClick={logout} className="bg-red-500 px-4 py-1 rounded-md hover:bg-red-700">Logout</button>
             </>
           ) : (

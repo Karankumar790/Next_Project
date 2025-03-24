@@ -30,7 +30,9 @@
 "use client";
 import { useState } from "react";
 import { TextField, Button } from "@mui/material"; 
+import {  useRouter } from "next/navigation";
 export default function Signup() {
+  const router = useRouter(); // Initialize router
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -46,29 +48,59 @@ export default function Signup() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
  
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+  //   setMessage("");
+  
+  //   try {
+  //     const response = await fetch("/api/auth/register", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         username: formData.username,
+  //         email: formData.email,
+  //         phone: formData.phone,
+  //         password: formData.password,
+  //       }),
+  //     });
+  
+  //     const data = await response.json();
+  //     if (data.ok) {
+  //       setMessage(data.message);
+  //       outer.push("/login");
+       
+  //     } else {
+  //       setError(data.error || "An unknown error occurred");
+  //     }
+  //   } catch (error) {
+  //     setError("An error occurred while registering.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setMessage("");
-  
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
-      if (data.message) {
+      if (response.ok) {
         setMessage(data.message);
+        setTimeout(() => {
+          router.push("/login"); // Redirect to login page after success
+        }, 2000); // Optional: delay for better UX
       } else {
         setError(data.error || "An unknown error occurred");
       }
@@ -78,7 +110,6 @@ export default function Signup() {
       setLoading(false);
     }
   };
-  
   return (
     <div className="bg-[url('/login.jpg')] bg-cover min-h-screen">
       {/* Background Image */}
@@ -165,6 +196,7 @@ export default function Signup() {
             </div>
 
             {/* Submit Button */}
+            <a href="/login" className="font-medium text-blue-600 hover:underline">
             <Button
               type="submit"
               variant="contained"
@@ -174,6 +206,7 @@ export default function Signup() {
             >
               {loading ? "Registering..." : "Register"}
             </Button>
+            </a>
 
             {/* Error and Success Messages */}
             {error && <p className="text-red-500 text-center">{error}</p>}

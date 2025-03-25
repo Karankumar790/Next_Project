@@ -42,9 +42,9 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="text-3xl text-black font-bold">Welcome to Dashboard 🚀</h1>
-      <p className="text-2xl  mt-2 text-gray-700">Please Click on Home!</p>
+      <p className="text-2xl  mt-2 text-gray-700">Refresh it!</p>
 
-      <h2 className="text-2xl font-semibold mt-6">All Posts</h2>
+      <h2 className="text-2xl text-black font-semibold mt-6">All Posts</h2>
 
       {loading && <p>Loading posts...</p>}
       {error && <p className="text-red-500">{error}</p>}

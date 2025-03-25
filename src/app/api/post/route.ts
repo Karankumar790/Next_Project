@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/utils/db";
+import  connectDB from "@/lib/db";
 import Post from "@/models/post";
-import { getUserFromToken } from "@/utils/auth";
+import { getUserFromToken } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    
+
     // Populate userId to include username & email
-    const posts = await Post.find().populate("userId", "username email").sort({ createdAt: -1 });
+    const posts = await Post.find()
+      .populate("userId", "username email")
+      .sort({ createdAt: -1 });
 
     return NextResponse.json({ posts }, { status: 200 });
   } catch (error) {
@@ -52,4 +54,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

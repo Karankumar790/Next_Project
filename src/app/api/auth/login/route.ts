@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { connectDB } from "@/utils/db";
+import connectDB from "@/lib/db";
 import User from "@/models/user";
 
 export async function POST(req: Request) {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   // Check for JWT secret from environment variables
   const jwtSecret = process.env.JWT_SECRET;
-  console.log("JWT_SECRET:", jwtSecret); // Debugging line
+  console.log("JWT_SECRET:", jwtSecret); 
   if (!jwtSecret) {
     console.error("JWT_SECRET environment variable is missing.");
     return NextResponse.json(

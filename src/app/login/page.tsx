@@ -46,7 +46,7 @@ export default function Login() {
         setError(data.error || "An unknown error occurred");
       }
     } catch (error) {
-      toast.error("An error occurred while logging in."); // Network error toast
+      toast.error("An error occurred while logging in."+error); // Network error toast
       setError("An error occurred while logging in.");
     } finally {
       setLoading(false);

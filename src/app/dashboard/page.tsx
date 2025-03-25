@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@/context/Authcontext";
 import { useEffect, useState } from "react";
 
 interface Post {
@@ -14,9 +13,6 @@ interface Post {
 }
 
 export default function Dashboard() {
-  const authContext = useAuth();
-  const user = authContext?.user;
-  const logout = authContext?.logout;
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,6 @@
 "use client";
 import { useAuth } from "@/context/Authcontext";
+import Link from "next/link";
 
 export default function Navbar() {
   const authContext = useAuth();
@@ -12,18 +13,17 @@ export default function Navbar() {
         <h1 className="text-xl font-bold">Next Project</h1>
         
         <nav>
-          <a href="/" className="mr-4 hover:underline">Home</a>
+          <Link href="/" className="mr-4 hover:underline">Home</Link>
           {user ? (
             <>
-              <a href="/profile" className="mr-4 hover:underline">Profile</a>
-              <a href="/post" className="mr-4 hover:underline">Posts</a>
-              <a href="/mypost" className="mr-4 hover:underline">My Posts</a>
+              <Link href="/post" className="mr-4 hover:underline">Posts</Link>
+              <Link href="/mypost" className="mr-4 hover:underline">My Posts</Link>
               <button onClick={logout} className="bg-red-500 px-4 py-1 rounded-md hover:bg-red-700">Logout</button>
             </>
           ) : (
             <>
-              <a href="/signup" className="mr-4 hover:underline">Signup</a>
-              <a href="/login" className="hover:underline">Login</a>
+              <Link href="/signup" className="mr-4 hover:underline">Signup</Link>
+              <Link href="/login" className="hover:underline">Login</Link>
             </>
           )}
         </nav>

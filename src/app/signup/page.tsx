@@ -1,32 +1,3 @@
-// "use client";
-// import { useState } from "react";
-
-// export default function Signup() {
-//   const [form, setForm] = useState({ username: "", email: "", password: "" });
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     const res = await fetch("/api/auth/register", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(form),
-//     });
-//     const data = await res.json();
-//     alert(data.message || data.error);
-//   };
-
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//       <form onSubmit={handleSubmit} className="w-full max-w-sm p-6 bg-white shadow-md rounded-md">
-//         <h2 className="text-2xl font-semibold mb-4">Signup</h2>
-//         <input type="text" placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="w-full p-2 mb-2 border rounded-md" required />
-//         <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full p-2 mb-2 border rounded-md" required />
-//         <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full p-2 mb-2 border rounded-md" required />
-//         <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">Signup</button>
-//       </form>
-//     </div>
-//   );
-// }
 "use client";
 import { useState } from "react";
 import { TextField, Button } from "@mui/material"; 
@@ -47,41 +18,7 @@ export default function Signup() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
- 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError("");
-  //   setMessage("");
-  
-  //   try {
-  //     const response = await fetch("/api/auth/register", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         username: formData.username,
-  //         email: formData.email,
-  //         phone: formData.phone,
-  //         password: formData.password,
-  //       }),
-  //     });
-  
-  //     const data = await response.json();
-  //     if (data.ok) {
-  //       setMessage(data.message);
-  //       outer.push("/login");
-       
-  //     } else {
-  //       setError(data.error || "An unknown error occurred");
-  //     }
-  //   } catch (error) {
-  //     setError("An error occurred while registering.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -105,6 +42,7 @@ export default function Signup() {
         setError(data.error || "An unknown error occurred");
       }
     } catch (error) {
+      console.log(error)
       setError("An error occurred while registering.");
     } finally {
       setLoading(false);

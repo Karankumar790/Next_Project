@@ -375,13 +375,12 @@
 //     );
 //   }
 // }
+import { NextRequest, NextResponse } from 'next/server';
+import connectDB from '@/lib/db';
+import Post from '@/models/post';
+import mongoose from 'mongoose';
 
-import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db";
-import Post from "@/models/post";
-import mongoose from "mongoose";
-
-// ✅ Fix: Use correct Next.js Route Handler Context typing
+// ✅ Corrected PUT handler with proper typing and error handling
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } } // 🔥 Corrected typing
@@ -389,46 +388,49 @@ export async function PUT(
   try {
     await connectDB();
 
+    // Validate the ID
     if (!params?.id || !mongoose.Types.ObjectId.isValid(params.id)) {
-      return NextResponse.json({ error: "Invalid Post ID" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid Post ID' }, { status: 400 });
     }
 
-    // ✅ Fix: Parse JSON properly
+    // Parse the request body
     const body = await req.json();
     if (!body?.content) {
       return NextResponse.json(
-        { error: "Content is required" },
+        { error: 'Content is required' },
         { status: 400 }
       );
     }
 
+    // Update the post
     const updatedPost = await Post.findByIdAndUpdate(
       params.id,
       { content: body.content },
       { new: true }
     );
 
+    // Handle if post not found
     if (!updatedPost) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     return NextResponse.json(
-      { message: "Post updated successfully", post: updatedPost },
+      { message: 'Post updated successfully', post: updatedPost },
       { status: 200 }
     );
   } catch (error) {
-    console.error("PUT Error:", error);
+    console.error('PUT Error:', error);
     return NextResponse.json(
       {
-        error: "Server error",
-        details: error instanceof Error ? error.message : "Unknown error",
+        error: 'Server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
   }
 }
 
-// ✅ Fixed DELETE function
+// ✅ Corrected DELETE handler with proper typing and error handling
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } } // 🔥 Corrected typing
@@ -436,25 +438,27 @@ export async function DELETE(
   try {
     await connectDB();
 
+    // Validate the ID
     if (!params?.id || !mongoose.Types.ObjectId.isValid(params.id)) {
-      return NextResponse.json({ error: "Invalid Post ID" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid Post ID' }, { status: 400 });
     }
 
+    // Delete the post
     const deletedPost = await Post.findByIdAndDelete(params.id);
     if (!deletedPost) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     return NextResponse.json(
-      { message: "Post deleted successfully" },
+      { message: 'Post deleted successfully' },
       { status: 200 }
     );
   } catch (error) {
-    console.error("DELETE Error:", error);
+    console.error('DELETE Error:', error);
     return NextResponse.json(
       {
-        error: "Server error",
-        details: error instanceof Error ? error.message : "Unknown error",
+        error: 'Server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
